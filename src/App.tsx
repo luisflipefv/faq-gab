@@ -63,7 +63,7 @@ function App() {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
       <header className="bg-[#003071] text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-center space-x-3">
@@ -74,7 +74,7 @@ function App() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-12 flex-grow">
         {currentView === 'divisions' && (
           <div className="space-y-8">
             <div className="text-center space-y-4">

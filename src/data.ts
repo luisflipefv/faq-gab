@@ -16,7 +16,7 @@ export const divisions: Division[] = [
   {
     id: 'passageiros',
     name: 'Passageiros',
-    icon: 'Users',
+    icon: 'Bus',
     color: 'border-orange-500',
   },
   {
