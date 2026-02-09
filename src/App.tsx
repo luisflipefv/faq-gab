@@ -186,7 +186,7 @@ function App() {
             Não encontrou o que procura? Abra um chamado no Field Service.
           </p>
           <p className="text-blue-200 text-sm mt-2">
-            © 2024 Grupo Águia Branca - Todos os direitos reservados
+            © 2026 Grupo Águia Branca - Todos os direitos reservados
           </p>
         </div>
       </footer>
