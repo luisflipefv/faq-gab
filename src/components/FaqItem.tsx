@@ -35,7 +35,7 @@ export function FaqItem({ question, answer, tip }: FaqItemProps) {
         <div className="px-6 pb-5 pt-2 text-gray-600 leading-relaxed border-t border-gray-100">
           {answer}
           {tip && (
-            <p><a className="mt-4 text-sm text-gray-500 italic" href='https://gab.com.br' target='_blank'>{tip}</a></p>
+            <p><a className="mt-4 text-sm text-gray-500 italic" href='https://sos.aguiabranca.com.br/cardapio/descricao?id=120' target='_blank'>{tip}</a></p>
           )}
         </div>
       </div>
