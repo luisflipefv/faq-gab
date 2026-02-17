@@ -1,192 +1,103 @@
-import { useState, useMemo } from 'react';
-import { ArrowLeft, HelpCircle } from 'lucide-react';
-import { DivisionCard } from './components/DivisionCard';
-import { CategoryCard } from './components/CategoryCard';
+import { useState } from 'react';
+import { topics, faqItems } from './data';
 import { FaqItem } from './components/FaqItem';
-import { SearchBar } from './components/SearchBar';
 import { FloatingCTA } from './components/FloatingCTA';
-import { divisions, categories, faqItems } from './data';
-import { Division, Category } from './types';
-
-type ViewType = 'divisions' | 'categories' | 'faq';
+import './index.css';
+import { CategoryCard } from './components/CategoryCard';
 
 function App() {
-  const [currentView, setCurrentView] = useState<ViewType>('divisions');
-  const [selectedDivision, setSelectedDivision] = useState<Division | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleDivisionClick = (division: Division) => {
-    setSelectedDivision(division);
-    setCurrentView('categories');
-    setSearchQuery('');
-  };
-
-  const handleCategoryClick = (category: Category) => {
-    setSelectedCategory(category);
-    setCurrentView('faq');
-    setSearchQuery('');
-  };
-
-  const handleBackToDivisions = () => {
-    setCurrentView('divisions');
-    setSelectedDivision(null);
-    setSelectedCategory(null);
-    setSearchQuery('');
-  };
-
-  const handleBackToCategories = () => {
-    setCurrentView('categories');
-    setSelectedCategory(null);
-    setSearchQuery('');
-  };
-
-  const filteredCategories = useMemo(() => {
-    if (!selectedDivision) return [];
-    return categories.filter(cat => cat.divisionId === selectedDivision.id);
-  }, [selectedDivision]);
-
-  const filteredFaqItems = useMemo(() => {
-    if (!selectedCategory) return [];
-
-    let items = faqItems.filter(item => item.categoryId === selectedCategory.id);
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      items = items.filter(item =>
-        item.question.toLowerCase().includes(query) ||
-        item.answer.toLowerCase().includes(query)
-      );
-    }
-
-    return items;
-  }, [selectedCategory, searchQuery]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [openTopicId, setOpenTopicId] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
-      <header className="bg-[#003071] text-white shadow-lg">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-center space-x-3">
-            <HelpCircle size={32} />
-            <h1 className="text-3xl font-bold">Portal de Autoatendimento</h1>
-          </div>
-          <p className="text-center text-blue-100 mt-2">Grupo Águia Branca</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col font-['Poppins']">
+      <header className="bg-[#003071] text-white py-10">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-3xl font-bold">Portal de Autoatendimento</h1>
+          <p className="mt-2 opacity-90">Grupo Águia Branca</p>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 flex-grow">
-        {currentView === 'divisions' && (
-          <div className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-[#003071]">
-                Selecione uma Divisão
-              </h2>
-              <p className="text-gray-600 text-lg">
-                Escolha a área para encontrar respostas específicas
-              </p>
-            </div>
+      <main className="flex-grow container mx-auto px-4 py-12 max-w-4xl">
+        {/* Barra de Busca */}
+        <div className="relative mb-8 -translate-y-16">
+          <input
+            type="text"
+            placeholder="Pesquise sua dúvida..."
+            className="w-full pl-6 pr-6 py-4 rounded-xl shadow-xl border-none outline-none focus:ring-2 focus:ring-[#003071]/20 transition-all"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {divisions.map((division) => (
-                <DivisionCard
-                  key={division.id}
-                  division={division}
-                  onClick={() => handleDivisionClick(division)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {currentView === 'categories' && selectedDivision && (
-          <div className="space-y-8 max-w-4xl mx-auto">
-            <button
-              onClick={handleBackToDivisions}
-              className="flex items-center space-x-2 text-[#003071] hover:text-blue-700 transition-colors font-medium group"
-            >
-              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-              <span>Voltar para Divisões</span>
-            </button>
-
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-[#003071]">
-                {selectedDivision.name}
-              </h2>
-              <p className="text-gray-600 text-lg">
-                Selecione uma categoria para ver as perguntas frequentes
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {filteredCategories.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  category={category}
-                  onClick={() => handleCategoryClick(category)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {currentView === 'faq' && selectedCategory && (
-          <div className="space-y-8 max-w-4xl mx-auto">
-            <button
-              onClick={handleBackToCategories}
-              className="flex items-center space-x-2 text-[#003071] hover:text-blue-700 transition-colors font-medium group"
-            >
-              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-              <span>Voltar para Categorias</span>
-            </button>
-
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-[#003071]">
-                {selectedCategory.name}
-              </h2>
-              <p className="text-gray-600 text-lg">
-                Perguntas frequentes sobre {selectedCategory.name.toLowerCase()}
-              </p>
-            </div>
-
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Buscar perguntas..."
+        <div className="space-y-4">
+          {searchTerm.trim() ? (
+            // VISÃO DE BUSCA
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 min-h-[200px]">
+    <div className="flex flex-col space-y-2">
+      {faqItems
+        .filter(f =>
+          f.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          f.answer.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map((item, index) => (
+          <div 
+            key={item.id}
+            className="animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+            style={{ animationDelay: `${index * 50}ms` }} // Efeito cascata
+          >
+            <FaqItem
+              question={item.question}
+              answer={item.answer}
+              tip={item.tip}
+              tipLink={item.tipLink}
             />
-
-            <div className="space-y-4">
-              {filteredFaqItems.length > 0 ? (
-                filteredFaqItems.map((item) => (
-                  <FaqItem
-                    key={item.id}
-                    question={item.question}
-                    answer={item.answer}
-                    tip={item.tip}
-                  />
-                ))
-              ) : (
-                <div className="text-center py-12 bg-white rounded-xl shadow-md">
-                  <p className="text-gray-500 text-lg">
-                    {searchQuery
-                      ? 'Nenhuma pergunta encontrada para sua busca.'
-                      : 'Nenhuma pergunta disponível nesta categoria.'}
-                  </p>
-                </div>
-              )}
-            </div>
           </div>
-        )}
+        ))}
+    </div>
+  </div>
+          ) : (
+            // VISÃO POR TÓPICOS: Com animação suave de expansão
+            topics.map(topic => (
+              <div key={topic.id} className="group">
+                <CategoryCard
+                  topic={topic}
+                  isOpen={openTopicId === topic.id}
+                  onClick={() => setOpenTopicId(openTopicId === topic.id ? null : topic.id)}
+                />
+
+                {/* Container de Animação Suave */}
+                <div 
+                  className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                    openTopicId === topic.id 
+                      ? 'max-h-[2000px] opacity-100 mt-2' 
+                      : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="bg-white/50 rounded-xl p-4 border border-gray-100 shadow-inner">
+                    {faqItems
+                      .filter(item => item.topicIds?.includes(topic.id))
+                      .map(item => <FaqItem key={item.id} {...item} />)
+                    }
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </main>
 
       <FloatingCTA />
 
-      <footer className="bg-[#003071] text-white py-8 mt-16">
+      <footer className="bg-[#003071] text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-blue-100">
-            Não encontrou o que procura? Abra um chamado no Field Service.
+          <div className="mb-6 opacity-30">
+            <img src="/logo-gab-white.png" alt="GAB" className="mx-auto h-8 invisible" />
+          </div>
+          <p className="text-blue-100 mb-2 font-medium">
+            Não encontrou o que precisava? Nossa equipe de Field Service está à disposição.
           </p>
-          <p className="text-blue-200 text-sm mt-2">
-            © 2026 Grupo Águia Branca - Todos os direitos reservados
+          <p className="text-blue-300/60 text-xs">
+            © 2026 Grupo Águia Branca • Desenvolvido por Luis Felipe
           </p>
         </div>
       </footer>
