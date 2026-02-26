@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Lightbulb, SignpostBig } from 'lucide-react';
+import { Plus, SignpostBig } from 'lucide-react';
 
 interface FaqItemProps {
   question: string;
